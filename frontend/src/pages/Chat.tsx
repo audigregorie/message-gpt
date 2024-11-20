@@ -26,7 +26,7 @@ const Chat = () => {
 
     try {
       const chatData = await sendChatRequest(content);
-      setChatMessages((prev) => [...prev, ...chatData.chats]);
+      setChatMessages([...chatData.chats]);
 
       if (inputRef.current) inputRef.current.value = '';
     } catch (error: any) {

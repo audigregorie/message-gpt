@@ -6,7 +6,6 @@ export const generateChatCompletion = async (req, res) => {
     try {
         const { message } = req.body;
         const user = await User.findById(res.locals.jwtData.id);
-        console.log('JWT Data:', res.locals.jwtData);
         if (!user)
             return res.status(401).send(`${statusMessage.USER_NOT_REGISTERED} OR ${statusMessage.TOKEN_NOT_FOUND}`);
         const chats = user.chats.map(({ role, content }) => ({ role, content }));

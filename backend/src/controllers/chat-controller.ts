@@ -7,8 +7,8 @@ import { ChatCompletionRequestMessage, OpenAIApi } from 'openai';
 export const generateChatCompletion = async (req: Request, res: Response) => {
   try {
     const { message } = req.body;
+
     const user = await User.findById(res.locals.jwtData.id);
-    console.log('JWT Data:', res.locals.jwtData);
     if (!user) return res.status(401).send(`${statusMessage.USER_NOT_REGISTERED} OR ${statusMessage.TOKEN_NOT_FOUND}`);
 
     const chats = user.chats.map(({ role, content }) => ({ role, content })) as ChatCompletionRequestMessage[];
@@ -24,6 +24,7 @@ export const generateChatCompletion = async (req: Request, res: Response) => {
 
     user.chats.push(chatResponse.data.choices[0].message);
     await user.save();
+
     return res.status(200).json({ chats: user.chats });
   } catch (error) {
     console.log(error);
