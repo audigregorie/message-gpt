@@ -1,16 +1,18 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Logo from './shared/Logo';
 
 const Header = () => {
-  const { isLoggedIn } = useAuth();
-
-  const handleLogout = async () => {
-    console.log('Navigate to logout ');
-  };
+  const { isLoggedIn, logout } = useAuth();
+  const navigate = useNavigate();
 
   const handleSignup = () => {
     console.log('Navigate to signup or trigger signup process');
+  };
+
+  const handleLogout = async () => {
+    await logout();
+    navigate('/');
   };
 
   return (

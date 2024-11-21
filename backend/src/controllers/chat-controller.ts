@@ -29,7 +29,7 @@ export const generateChatCompletion = async (req: Request, res: Response, next: 
 
     return res.status(200).json({ chats: user.chats });
   } catch (err: any) {
-    console.log(err);
+    console.error(err);
     return res.status(500).json({
       message: 'Internal Server Error',
       cause: (err as Error).message

@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
-import { checkAuthStatus, loginUser } from '../helpers/api-communicator';
+import { checkAuthStatus, loginUser, logoutUser } from '../helpers/api-communicator';
 import { User, UserAuth } from '../interface/common.interface';
 
 const AuthContext = createContext<UserAuth | null>(null);
@@ -16,8 +16,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           setUser({ name: data.name, email: data.email });
           setIsLoggedIn(true);
         }
-      } catch (error) {
-        console.error('Failed to check auth status:', error);
+      } catch (err) {
+        console.error('Failed to check auth status:', err);
       }
     }
 
@@ -31,8 +31,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setUser({ name: data.name, email: data.email });
         setIsLoggedIn(true);
       }
-    } catch (error) {
-      console.error('Login failed:', error);
+    } catch (err: any) {
+      console.error('Failed to login user:', err);
     }
   };
 
@@ -41,11 +41,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     console.log('Signup called with:', { name, email, password });
   };
 
-  // Not implemented
   const logout = async () => {
-    console.log('Logout called');
-    setUser(null);
-    setIsLoggedIn(false);
+    try {
+      await logoutUser();
+      setIsLoggedIn(false);
+      setUser(null);
+    } catch (err: any) {
+      console.error('Failed to logout user:', err);
+    }
   };
 
   const value: UserAuth = {

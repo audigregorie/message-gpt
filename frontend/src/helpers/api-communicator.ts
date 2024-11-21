@@ -1,4 +1,9 @@
-import axiosInstance from '../utils/api/axiosInstance';
+import axios from 'axios';
+
+const axiosInstance = axios.create({
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1',
+  withCredentials: true
+});
 
 export const loginUser = async (email: string, password: string) => {
   try {
@@ -51,5 +56,14 @@ export const deleteUserChats = async () => {
     return res.data;
   } catch (err: any) {
     throw new Error(err.response?.data?.message || 'Unable to delete chats');
+  }
+};
+
+export const logoutUser = async () => {
+  try {
+    const res = await axiosInstance.get('/user/logout');
+    return res.data;
+  } catch (err: any) {
+    throw new Error(err.response?.data?.message || 'Unable to logout user');
   }
 };
