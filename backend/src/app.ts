@@ -6,14 +6,13 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 
 config();
-
 const app = express();
-
+// Middlewares
 app.use(cors({ origin: 'http://localhost:5174', credentials: true }));
-app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(express.json());
+app.use(cookieParser(process.env.COOKIE_SECRET));
 
-// @Audi remove in production
+// Remove it for production
 app.use(morgan('dev'));
 
 app.use('/api/v1', appRouter);

@@ -3,34 +3,40 @@ import FormInput from '../components/shared/FormInput';
 import { IoIosLogIn } from 'react-icons/io';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
 const Login = () => {
-  const auth = useAuth();
+  const navigate = useNavigate();
+  const { user, login } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const email = formData.get('email') as string;
     const password = formData.get('password') as string;
-
     try {
-      toast.loading('Signing in...', { id: 'login' });
-      await auth?.login(email, password);
-      toast.success('Sign in successfull', { id: 'login' });
+      toast.loading('Signing In', { id: 'login' });
+      await login(email, password);
+      toast.success('Signed In Successfully', { id: 'login' });
     } catch (error) {
       console.log(error);
-      toast.error('Sign in failed', { id: 'login' });
+      toast.error('Signing In Failed', { id: 'login' });
     }
   };
+
+  useEffect(() => {
+    if (user) {
+      return navigate('/chat');
+    }
+  }, [user]);
 
   return (
     <div className="w-full h-full flex flex-1 px-32">
       <div className="mt-32 md:flex ">
-        {/* <img src="chatbot-canva.png" alt="Chatbot" className="w-[35rem] h-[35rem]" /> */}
         <img src="ai-mobile-chat.png" alt="Chatbot" className="w-[55rem] h-[40rem]" />
       </div>
 
-      {/* <div className="flex sm:flex-1 md:flex-[0.5] justify-center items-center p-2 ml-auto mt-16 debug"> */}
       <div className="ml-auto flex mt-auto sm:flex-1 md:flex-[0.5] justify-center items-center">
         <form onSubmit={handleSubmit} className="m-auto p-10 rounded-xl border-none shadow-[10px_10px_20px_#000] ">
           <div className="flex flex-col justify-center">

@@ -1,45 +1,55 @@
-import axios from 'axios';
+import axiosInstance from '../utils/api/axiosInstance';
 
 export const loginUser = async (email: string, password: string) => {
-  const res = await axios.post('/user/login', { email, password });
-
-  if (res.status !== 200) {
-    throw new Error('Unable to login');
+  try {
+    const res = await axiosInstance.post('/user/login', { email, password });
+    return res.data;
+  } catch (err: any) {
+    throw new Error(err.response?.data?.message || 'Unable to login');
   }
-
-  const data = await res.data;
-  return data;
 };
 
 export const signupUser = async (name: string, email: string, password: string) => {
-  const res = await axios.post('/user/signup', { name, email, password });
-
-  if (res.status !== 201) {
-    throw new Error('Unable to Signup');
+  try {
+    const res = await axiosInstance.post('/user/signup', { name, email, password });
+    return res.data;
+  } catch (err: any) {
+    throw new Error(err.response?.data?.message || 'Unable to signup');
   }
-
-  const data = await res.data;
-  return data;
 };
 
 export const checkAuthStatus = async () => {
-  const res = await axios.get('/user/auth-status');
-
-  if (res.status !== 200) {
-    throw new Error('Unable to authenticate');
+  try {
+    const res = await axiosInstance.get('/user/auth-status');
+    return res.data;
+  } catch (err: any) {
+    throw new Error(err.response?.data?.message || 'Unable to authenticate');
   }
-
-  const data = await res.data;
-  return data;
 };
 
 export const sendChatRequest = async (message: string) => {
-  const res = await axios.post('/chat/new', { message });
-
-  if (res.status !== 200) {
-    throw new Error('Unable to send chat request');
+  try {
+    const res = await axiosInstance.post('/chat/new', { message });
+    return res.data;
+  } catch (err: any) {
+    throw new Error(err.response?.data?.message || 'Unable to send chat request');
   }
+};
 
-  const data = await res.data;
-  return data;
+export const getUserChats = async () => {
+  try {
+    const res = await axiosInstance.get('/chat/all-chats');
+    return res.data;
+  } catch (err: any) {
+    throw new Error(err.response?.data?.message || 'Unable to retrieve chats');
+  }
+};
+
+export const deleteUserChats = async () => {
+  try {
+    const res = await axiosInstance.delete('/chat/delete');
+    return res.data;
+  } catch (err: any) {
+    throw new Error(err.response?.data?.message || 'Unable to delete chats');
+  }
 };

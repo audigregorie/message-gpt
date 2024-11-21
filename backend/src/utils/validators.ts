@@ -9,10 +9,12 @@ export const validate = (validations: ValidationChain[]) => {
         break;
       }
     }
+
     const errors = validationResult(req);
     if (errors.isEmpty()) {
       return next();
     }
+
     return res.status(422).json({ errors: errors.array() });
   };
 };
@@ -24,4 +26,4 @@ export const loginValidator = [
 
 export const signupValidator = [body('name').notEmpty().withMessage('Name is required'), ...loginValidator];
 
-export const chatCompletionValidator = [body('message').notEmpty().withMessage('A message is required')];
+export const chatCompletionValidator = [body('message').notEmpty().withMessage('Message  is required')];

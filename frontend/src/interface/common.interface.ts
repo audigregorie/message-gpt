@@ -1,10 +1,12 @@
 import { Role } from '../enums/common.enum';
 
+// User in the system
 export interface User {
   name: string;
   email: string;
 }
 
+// Authentication context for a user
 export interface UserAuth {
   isLoggedIn: boolean;
   user: User | null;
@@ -13,12 +15,14 @@ export interface UserAuth {
   logout: () => Promise<void>;
 }
 
+// Form input element
 export interface InputForm {
   name: string;
-  type: string;
+  type: 'text' | 'password' | 'email' | 'number' | 'checkbox' | 'radio';
   label: string;
 }
 
+// Chat message skeleton to and from backend
 export interface ChatMessage {
   role: Role;
   content: string;

@@ -22,7 +22,7 @@ function extractCodeBlocks(message: string) {
 
 const ChatItem: React.FC<ChatMessage> = ({ role, content }) => {
   const messageBlocks = extractCodeBlocks(content);
-  const auth = useAuth();
+  const { user } = useAuth();
 
   return role === Role.Assistant ? (
     <div className="flex my-2 rounded-xl p-4 gap-4 items-start bg-[rgb(17,27,39)]">
@@ -47,8 +47,8 @@ const ChatItem: React.FC<ChatMessage> = ({ role, content }) => {
     <div className="flex my-2 rounded-xl p-4 gap-4 items-start bg-[rgb(2,19,31)]">
       <Avatar className="ml-0 !bg-black">
         <span className="text-white">
-          {auth?.user?.name[0]}
-          {auth?.user?.name.split(' ')[1]?.[0] || ''}
+          {user?.name[0]}
+          {user?.name.split(' ')[1]?.[0] || ''}
         </span>
       </Avatar>
       <div className="pt-2">

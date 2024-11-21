@@ -3,30 +3,38 @@ import { useAuth } from '../context/AuthContext';
 import Logo from './shared/Logo';
 
 const Header = () => {
-  const auth = useAuth();
+  const { isLoggedIn } = useAuth();
+
+  const handleLogout = async () => {
+    console.log('Navigate to logout ');
+  };
+
+  const handleSignup = () => {
+    console.log('Navigate to signup or trigger signup process');
+  };
 
   return (
     <header className="bg-transparent shadow-none static px-4 py-2">
       <div className="flex items-center justify-between">
         <Logo />
         <div>
-          {auth?.isLoggedIn ? (
+          {isLoggedIn ? (
             <>
-              <Link to={'/chat'} className="nav-link bg-[#00fffc] text-black">
+              <Link to="/chat" className="nav-link bg-[#00fffc] text-black">
                 Go To Chat
               </Link>
-              <Link to={'/'} onClick={() => auth?.logout} className="nav-link bg-[#51538f]">
+              <button onClick={handleLogout} className="nav-link bg-[#51538f] text-white px-4 py-2 rounded">
                 Logout
-              </Link>
+              </button>
             </>
           ) : (
             <>
-              <Link to={'/login'} className="nav-link bg-[#00fffc] text-black">
+              <Link to="/login" className="nav-link bg-[#00fffc] text-black">
                 Login
               </Link>
-              <Link to={'/signup'} onClick={() => auth?.signup} className="nav-link bg-[#51538f]">
+              <button onClick={handleSignup} className="nav-link bg-[#51538f] text-white px-4 py-2 rounded">
                 Sign up
-              </Link>
+              </button>
             </>
           )}
         </div>
