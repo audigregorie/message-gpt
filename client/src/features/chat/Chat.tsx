@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Avatar, IconButton } from '@mui/material';
+// import { Avatar } from '@mui/material';
 import { IoMdSend } from 'react-icons/io';
 import { ChatMessage } from '../../utils/common.interface';
 import toast from 'react-hot-toast';
@@ -11,20 +12,20 @@ import { useAuth } from '../../utils/auth/AuthContext';
 
 const Chat = () => {
   const navigate = useNavigate();
-  const inputRef = useRef<HTMLInputElement | null>(null);
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const auth = useAuth();
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
 
   const handleSubmitChats = async () => {
     try {
-      const content = inputRef.current?.value?.trim();
+      const content = textareaRef.current?.value?.trim();
       if (!content) {
         toast.error('Message cannot be empty');
         return;
       }
 
-      if (inputRef?.current) {
-        inputRef.current.value = '';
+      if (textareaRef?.current) {
+        textareaRef.current.value = '';
       }
 
       const newMessage: ChatMessage = { role: Role.User, content };
@@ -35,6 +36,20 @@ const Chat = () => {
     } catch (err) {
       console.error('Error sending message:', err);
       toast.error('Failed to send the message');
+    }
+  };
+
+  const handleEnterKey = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      handleSubmitChats();
+    }
+  };
+
+  const handleTextareaResize = () => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
     }
   };
 
@@ -104,16 +119,21 @@ const Chat = () => {
             <ChatItem role={chat.role} content={chat.content} key={index} />
           ))}
         </div>
-        <div className="w-full rounded-xl bg-[rgb(17,29,39)] flex">
-          <input
-            ref={inputRef}
-            type="text"
-            placeholder="Type your message..."
-            className="w-full bg-transparent p-8 border-none outline-none text-white text-sm"
+        <div className="w-full rounded-xl bg-[rgb(17,29,39)] flex flex-col">
+          <textarea
+            ref={textareaRef}
+            placeholder="What can I help you with..."
+            onKeyDown={handleEnterKey}
+            onInput={handleTextareaResize}
+            className="w-full min-h-12 bg-transparent p-4 border-none outline-none text-white text-sm resize-none overflow-hidden leading-6"
+            rows={1}
           />
-          <IconButton onClick={handleSubmitChats} className="!mr-6 !text-white">
-            <IoMdSend />
-          </IconButton>
+
+          <div className="w-full flex justify-end items-center bg-[rgb(17,29,39)] p-2 rounded-xl">
+            <IconButton onClick={handleSubmitChats} className="!text-white cursor-pointer">
+              <IoMdSend />
+            </IconButton>
+          </div>
         </div>
       </div>
     </div>

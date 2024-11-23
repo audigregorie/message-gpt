@@ -15,7 +15,7 @@ const ChatItem: React.FC<ChatMessage> = ({ role, content }) => {
       <Avatar className="ml-0 !bg-black">
         <img src="openai.png" alt="openai" className="w-8 invert" />
       </Avatar>
-      <div className="pt-2">
+      <div className="pt-2 leading-6">
         {messageBlocks.map((block, index) =>
           block.isCode ? (
             <SyntaxHighlighter key={index} style={coldarkDark} language={block.language}>
@@ -37,7 +37,7 @@ const ChatItem: React.FC<ChatMessage> = ({ role, content }) => {
           {auth?.user?.name.split(' ')[1]?.[0] || ''}
         </span>
       </Avatar>
-      <div className="pt-2">
+      <div className="pt-2 leading-6">
         {messageBlocks.map((block, index) =>
           block.isCode ? (
             <SyntaxHighlighter key={index} style={coldarkDark} language={block.language}>

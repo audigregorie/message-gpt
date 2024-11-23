@@ -29,7 +29,7 @@ const Login = () => {
     if (auth?.user) {
       return navigate('/chat');
     }
-  }, [auth?.user]);
+  }, [auth?.user, navigate]);
 
   return (
     <div className="w-full h-full flex flex-1 px-32">

@@ -25,7 +25,7 @@ const Header = () => {
               <Link to="/chat" className="nav-link bg-mgptTeal text-black">
                 Go To Chat
               </Link>
-              <button onClick={handleLogout} className="nav-link bg-mgptViolet text-white px-4 py-2 rounded">
+              <button onClick={handleLogout} className="nav-link  text-white rounded">
                 Logout
               </button>
             </>
@@ -34,7 +34,7 @@ const Header = () => {
               <Link to="/login" className="nav-link bg-mgptTeal text-black">
                 Login
               </Link>
-              <button onClick={handleSignup} className="nav-link bg-mgptViolet text-white px-4 py-2 rounded">
+              <button onClick={handleSignup} className="nav-link bg-mgptViolet text-white rounded">
                 Sign up
               </button>
             </>
