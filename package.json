@@ -1,7 +1,8 @@
 {
   "dependencies": {
     "@types/react-syntax-highlighter": "^15.5.13",
-    "react-syntax-highlighter": "^15.6.1"
+    "react-syntax-highlighter": "^15.6.1",
+    "react-type-animation": "^3.2.0"
   },
   "devDependencies": {
     "@types/node": "^22.9.1"
