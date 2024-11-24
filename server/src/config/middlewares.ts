@@ -3,7 +3,7 @@ import express from 'express';
 import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 
-export const setupMiddlewares = (app) => {
+export const setupMiddlewares = (app: any) => {
   app.use(cors({ origin: 'http://localhost:5174', credentials: true }));
 
   app.use(express.json());
