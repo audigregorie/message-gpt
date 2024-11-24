@@ -41,6 +41,10 @@ const Chat = () => {
 
   const handleEnterKey = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === 'Enter') {
+      if (event.shiftKey) {
+        return;
+      }
+
       event.preventDefault();
       handleSubmitChats();
     }

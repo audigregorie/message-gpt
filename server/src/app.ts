@@ -1,20 +1,14 @@
 import express from 'express';
 import { config } from 'dotenv';
-import morgan from 'morgan';
-import appRouter from './routes/index.js';
-import cookieParser from 'cookie-parser';
-import cors from 'cors';
+import router from './routes/index.js';
+import { setupMiddlewares } from './config/middlewares.js';
+
+const app = express();
 
 config();
-const app = express();
-// Middlewares
-app.use(cors({ origin: 'http://localhost:5174', credentials: true }));
-app.use(express.json());
-app.use(cookieParser(process.env.COOKIE_SECRET));
 
-// Remove it for production
-app.use(morgan('dev'));
+setupMiddlewares(app);
 
-app.use('/api/v1', appRouter);
+app.use('/api/v1', router);
 
 export default app;
