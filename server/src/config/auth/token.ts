@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { COOKIE_NAME } from '../../utils/constants.js';
+import { COOKIE_TOKEN } from '../../utils/constants.js';
+import { statusMessage } from '../../utils/enum.js';
 
 export const createToken = (id: string, email: string, expiresIn: string) => {
   const payload = { id, email };
@@ -9,10 +10,10 @@ export const createToken = (id: string, email: string, expiresIn: string) => {
 
 export const verifyToken = (req: Request, res: Response, next: NextFunction) => {
   try {
-    const token = req.signedCookies[`${COOKIE_NAME}`];
+    const token = req.signedCookies[`${COOKIE_TOKEN}`];
 
     if (!token || token.trim() === '') {
-      return res.status(401).json({ message: 'Token Not Received' });
+      return res.status(401).json({ message: statusMessage.TOKEN_NOT_FOUND });
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -23,7 +24,7 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction) => 
     next();
   } catch (err) {
     return res.status(401).json({
-      message: 'Token Expired or Invalid',
+      message: statusMessage.TOKEN_EXPIRED_INVALID,
       error: err instanceof Error ? err.message : 'Unknown error'
     });
   }

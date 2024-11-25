@@ -1,21 +1,22 @@
 import { NextFunction, Request, Response } from 'express';
 import User from '../models/User.js';
 import { hash, compare } from 'bcrypt';
-import { COOKIE_NAME } from '../utils/constants.js';
+import { COOKIE_TOKEN } from '../utils/constants.js';
 import { createToken } from '../config/auth/token.js';
+import { statusMessage } from '../utils/enum.js';
 
 export const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const users = await User.find();
 
     return res.status(200).json({
-      message: 'OK',
+      message: statusMessage.SUCCESS,
       users
     });
   } catch (err: any) {
     console.log(err);
     return res.status(500).json({
-      message: 'Internal Server Error',
+      message: statusMessage.INTERNAL_SERVER_ERROR,
       cause: (err as Error).message
     });
   }
@@ -27,7 +28,7 @@ export const userSignup = async (req: Request, res: Response, next: NextFunction
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(401).send('User already registered');
+      return res.status(401).send(statusMessage.USER_ALREADY_REGISTERED);
     }
 
     const hashedPassword = await hash(password, 10);
@@ -35,9 +36,9 @@ export const userSignup = async (req: Request, res: Response, next: NextFunction
     await user.save();
 
     // Store cookie
-    res.clearCookie(COOKIE_NAME, {
+    res.clearCookie(COOKIE_TOKEN, {
       httpOnly: true,
-      domain: 'localhost',
+      domain: process.env.COOKE_DOMAIN,
       signed: true,
       path: '/'
     });
@@ -45,23 +46,23 @@ export const userSignup = async (req: Request, res: Response, next: NextFunction
     const token = createToken(user._id.toString(), user.email, '7d');
     const expires = new Date();
     expires.setDate(expires.getDate() + 7);
-    res.cookie(COOKIE_NAME, token, {
+    res.cookie(COOKIE_TOKEN, token, {
       path: '/',
-      domain: 'localhost',
+      domain: process.env.COOKIE_DOMAIN,
       expires,
       httpOnly: true,
       signed: true
     });
 
     return res.status(201).json({
-      message: 'OK',
+      message: statusMessage.SUCCESS,
       name: user.name,
       email: user.email
     });
   } catch (err: any) {
     console.log(err);
     return res.status(500).json({
-      message: 'Internal Server Error',
+      message: statusMessage.INTERNAL_SERVER_ERROR,
       cause: (err as Error).message
     });
   }
@@ -73,17 +74,17 @@ export const userLogin = async (req: Request, res: Response, next: NextFunction)
 
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(401).send('User not registered');
+      return res.status(401).send(statusMessage.USER_NOT_REGISTERED);
     }
 
     const isPasswordCorrect = await compare(password, user.password);
     if (!isPasswordCorrect) {
-      return res.status(403).send('Incorrect Password');
+      return res.status(403).send(statusMessage.INCORRECT_PASSWORD);
     }
 
-    res.clearCookie(COOKIE_NAME, {
+    res.clearCookie(COOKIE_TOKEN, {
       httpOnly: true,
-      domain: 'localhost',
+      domain: process.env.COOKIE_DOMAIN,
       signed: true,
       path: '/'
     });
@@ -91,23 +92,23 @@ export const userLogin = async (req: Request, res: Response, next: NextFunction)
     const token = createToken(user._id.toString(), user.email, '7d');
     const expires = new Date();
     expires.setDate(expires.getDate() + 7);
-    res.cookie(COOKIE_NAME, token, {
+    res.cookie(COOKIE_TOKEN, token, {
       path: '/',
-      domain: 'localhost',
+      domain: process.env.COOKIE_DOMAIN,
       expires,
       httpOnly: true,
       signed: true
     });
 
     return res.status(200).json({
-      message: 'OK',
+      message: statusMessage.SUCCESS,
       name: user.name,
       email: user.email
     });
   } catch (err: any) {
     console.log(err);
     return res.status(500).json({
-      message: 'Internal Server Error',
+      message: statusMessage.INTERNAL_SERVER_ERROR,
       cause: (err as Error).message
     });
   }
@@ -116,25 +117,25 @@ export const userLogin = async (req: Request, res: Response, next: NextFunction)
 export const verifyUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     if (!res.locals.jwtData) {
-      return res.status(401).send('Authentication data not found');
+      return res.status(401).send(statusMessage.TOKEN_NOT_FOUND);
     }
 
     const user = await User.findById(res.locals.jwtData.id);
     if (!user) {
-      return res.status(401).send('User not registered OR Token malfunctioned');
+      return res.status(401).send(statusMessage.USER_NOT_REGISTERED);
     }
     if (user._id.toString() !== res.locals.jwtData.id) {
-      return res.status(401).send("Permissions didn't match");
+      return res.status(401).send(statusMessage.PERMISSIONS_DID_NOT_MATCH);
     }
     return res.status(200).json({
-      message: 'OK',
+      message: statusMessage.SUCCESS,
       name: user.name,
       email: user.email
     });
   } catch (err: any) {
     console.log(err);
     return res.status(500).json({
-      message: 'Internal Server Error',
+      message: statusMessage.INTERNAL_SERVER_ERROR,
       cause: (err as Error).message
     });
   }
@@ -142,31 +143,35 @@ export const verifyUser = async (req: Request, res: Response, next: NextFunction
 
 export const userLogout = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    if (!res.locals.jwtData) {
+      return res.status(401).send(statusMessage.TOKEN_NOT_FOUND);
+    }
+
     const user = await User.findById(res.locals.jwtData.id);
     if (!user) {
-      return res.status(401).send('User not registered OR Token malfunctioned');
+      return res.status(401).send(statusMessage.USER_NOT_REGISTERED);
     }
 
     if (user._id.toString() !== res.locals.jwtData.id) {
-      return res.status(401).send("Permissions didn't match");
+      return res.status(401).send(statusMessage.PERMISSIONS_DID_NOT_MATCH);
     }
 
-    res.clearCookie(COOKIE_NAME, {
+    res.clearCookie(COOKIE_TOKEN, {
       httpOnly: true,
-      domain: 'localhost',
+      domain: process.env.COOKIE_DOMAIN,
       signed: true,
       path: '/'
     });
 
     return res.status(200).json({
-      message: 'OK',
+      message: statusMessage.SUCCESS,
       name: user.name,
       email: user.email
     });
   } catch (err: any) {
     console.log(err);
     return res.status(500).json({
-      message: 'Internal Server Error',
+      message: statusMessage.INTERNAL_SERVER_ERROR,
       cause: (err as Error).message
     });
   }
