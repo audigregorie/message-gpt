@@ -1,7 +1,7 @@
 import cors from 'cors';
 import express from 'express';
 import cookieParser from 'cookie-parser';
-// import morgan from 'morgan';
+import morgan from 'morgan';
 
 export const setupMiddlewares = (app: any) => {
   app.use(cors({ origin: 'http://localhost:5174', credentials: true }));
@@ -11,8 +11,7 @@ export const setupMiddlewares = (app: any) => {
 
   app.use(cookieParser(process.env.COOKIE_SECRET));
 
-  // We do not want to use morgan in production mode
-  // if (process.env.NODE_ENV === 'development') {
-  //   app.use(morgan('dev'));
-  // }
+  if (process.env.NODE_ENV === 'development') {
+    app.use(morgan('dev'));
+  }
 };
