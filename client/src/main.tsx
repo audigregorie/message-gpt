@@ -6,11 +6,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { AuthProvider } from './utils/auth/AuthContext.tsx';
 import { Toaster } from 'react-hot-toast';
 
-const rootElement = document.getElementById('root');
-if (!rootElement) {
-  throw new Error('Root element not found');
-}
-createRoot(rootElement).render(
+createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <AuthProvider>
       <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
